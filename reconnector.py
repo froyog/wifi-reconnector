@@ -1,6 +1,8 @@
 import os
 import time
 import socket
+import sys
+import getopt
 # from urllib import request
 
 def log(content):
@@ -21,7 +23,6 @@ class Reconnecter:
         #     request.urlopen("https://www.baidu.com", timeout = 2)
         #     return True
         # except:
-        #     self.count += 1
         #     return False
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -29,6 +30,7 @@ class Reconnecter:
             s.connect(("www.baidu.com", 80))
             return True
         except:
+            self.count += 1
             return False
 
     def disconnect(self):
@@ -43,11 +45,11 @@ class Reconnecter:
         while True:
             print("==============================")
             log("Checking internet connection...")
-            if self.count == 6:
+            if self.count >= 5:
                 log("Unable to reconnect, exiting")
                 break
             if not self.isConnected():
-                log("No connection, reconnecting")
+                log("No connection, reconnecting...")
                 self.disconnect()
                 self.connect()
                 continue
@@ -56,5 +58,30 @@ class Reconnecter:
                 log("Still connected. See you in %s seconds" % self.timeout)
             time.sleep(self.timeout)
 
-reconnecter = Reconnecter(None, 30)
-reconnecter.start()
+def main(argv):
+    ssid = ""
+    timeout = 30
+
+    try:
+        opts, args = getopt.getopt(argv, "s:t:", ["ssid=", "timeout="])
+    except getopt.GetoptError:
+        print("unknown option")
+        print("usage: reconnector.py -s <ssid> -t <timeout>")
+        print("   or: reconnector.py --ssid=<ssid> --timeout=<timeout>")
+        return
+
+    for opt, arg in opts:
+        if opt in ("-s", "--ssid"):
+            ssid = arg
+        elif opt in ("-t", "--timeout"):
+            timeout = int(arg)
+
+    try:
+        reconnecter = Reconnecter(ssid, timeout)
+        reconnecter.start()
+    except ValueError as e:
+        print("Error: %s" % e)
+        return
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

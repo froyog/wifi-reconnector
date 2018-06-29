@@ -8,7 +8,7 @@
 ### 用法
 
 1. 安装 `git clone https://github.com/froyog/wifi-reconnector.git`
-2. 执行 `python index.py`
-3. 选项 设置 `reconnector = Reconnector(ssid, timeout)`
-    - ssid: 要断开重连的路由器ssid，无默认值
-    - timeout: 轮询时间，默认为30秒
+2. 执行 `python index.py -s <SomeSSID>`
+3. 选项
+    - `-s`: 要断开重连的路由器ssid，无默认值
+    - `-t`: 轮询时间，默认为30秒
