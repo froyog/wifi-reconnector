@@ -52,6 +52,7 @@ class Reconnecter:
                 log("No connection, reconnecting...")
                 self.disconnect()
                 self.connect()
+                time.sleep(2)
                 continue
             else:
                 self.count = 0
